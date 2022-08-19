@@ -43,7 +43,7 @@ func InitDBv2(cfg *settingts.MysqlConfig) (err error) {
 		cfg.Port,
 		cfg.DBName)
 	if db, err = sqlx.Connect("mysql", dsn); err != nil {
-		fmt.Println("数据库初始化失败", err)
+		fmt.Println("数据库初始化失败", err, dsn)
 		zap.L().Error("db connect failed, err: ", zap.Error(err))
 		return
 	}

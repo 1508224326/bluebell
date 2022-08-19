@@ -55,6 +55,7 @@ func main() {
 
 	// 3. 初始化 mysql 连接
 	if err := mysql.InitDBv2(settingts.Conf.MysqlConfig); err != nil {
+		zap.L().Error(settingts.Conf.MysqlConfig.Host)
 		zap.L().Error("mysql connection failed", zap.Error(err))
 		return
 	}
@@ -69,18 +70,18 @@ func main() {
 	defer redis.CLose()
 
 	//同步mysql数据到redis
-	list, err := mysql.GetAllPostList()
-	if err != nil {
-		zap.L().Error("Mysql同步数据出错", zap.Error(err))
-		fmt.Println("mysql.GetAllPostList() err : ", err)
-		return
-	}
-	err = redis.SetAllPosts(list)
-	if err != nil {
-		zap.L().Error("Redis同步数据出错", zap.Error(err))
-		fmt.Println("redis.SetAllPosts(list) err : ", err)
-		return
-	}
+	//list, err := mysql.GetAllPostList()
+	//if err != nil {
+	//	zap.L().Error("Mysql同步数据出错", zap.Error(err))
+	//	fmt.Println("mysql.GetAllPostList() err : ", err)
+	//	return
+	//}
+	//err = redis.SetAllPosts(list)
+	//if err != nil {
+	//	zap.L().Error("Redis同步数据出错", zap.Error(err))
+	//	fmt.Println("redis.SetAllPosts(list) err : ", err)
+	//	return
+	//}
 
 	// 初始化 ID 生成器
 	if err := snowflake.Init(settingts.Conf.StartTime, settingts.Conf.MachineID); err != nil {
@@ -117,6 +118,7 @@ func main() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			zap.L().Fatal("listen err", zap.Error(err))
 		}
+		fmt.Println("========================================================")
 	}()
 
 	quit := make(chan os.Signal, 1)
